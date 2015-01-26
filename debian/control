@@ -1,0 +1,19 @@
+Source: rabbitmq-server-parsec
+Priority: optional
+Section: net
+Maintainer: Laboratory 50 <team@lab50.net>
+Build-Depends: debhelper
+Standards-Version: 3.9.0
+Homepage: http://lab50.net/
+
+Package: rabbitmq-server-parsec
+Architecture: all
+Depends: parsec-cap
+Enhances: rabbitmq-server
+Description: скрипт запуска RabbitMQ с привилегией privsock
+ Пакет предоставляет средства для запуска сервера RabbitMQ
+ с привилегией Privsock ОС «Astra Linux Special Edition».
+ Пакетом устанливается демон rabbitmq-server-parsec, который
+ должен использоваться вместо rabbitmq-server.
+ .
+ Это пакет устанавливает демон rabbitmq-server-parsec.

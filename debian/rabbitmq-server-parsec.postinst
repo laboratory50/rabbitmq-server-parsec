@@ -1,0 +1,21 @@
+#!/bin/sh
+# postinst script for rabbitmq-server-parsec
+
+set -e
+
+service rabbitmq-server stop
+update-rc.d rabbitmq-server remove
+
+DAEMON=/usr/lib/rabbitmq/bin/rabbitmq-server
+
+if [ $1 == "configure" ] || [ $1 == "reconfigure" ]; then
+    if [ -f /etc/parsec/privsock.conf ]; then
+        grep -q "^${DAEMON}" /etc/parsec/privsock.conf \
+         || echo "${DAEMON}" >> /etc/parsec/privsock.conf
+    fi
+fi
+
+# DEBHELPER
+
+exit 0
+
