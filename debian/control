@@ -2,7 +2,7 @@ Source: rabbitmq-server-parsec
 Priority: optional
 Section: net
 Maintainer: Лаборатория 50 <team@lab50.net>
-Build-Depends: debhelper
+Build-Depends: debhelper, cdbs
 Standards-Version: 3.9.0
 Homepage: http://lab50.net/
 
