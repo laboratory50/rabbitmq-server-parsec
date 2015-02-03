@@ -1,14 +1,14 @@
 Source: rabbitmq-server-parsec
 Priority: optional
 Section: net
-Maintainer: Laboratory 50 <team@lab50.net>
+Maintainer: Лаборатория 50 <team@lab50.net>
 Build-Depends: debhelper
 Standards-Version: 3.9.0
 Homepage: http://lab50.net/
 
 Package: rabbitmq-server-parsec
 Architecture: all
-Depends: parsec-cap
+Depends: parsec-cap, libcap2-bin, rabbitmq-server
 Enhances: rabbitmq-server
 Description: скрипт запуска RabbitMQ с привилегией privsock
  Пакет предоставляет средства для запуска сервера RabbitMQ

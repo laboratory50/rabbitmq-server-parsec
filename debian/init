@@ -52,13 +52,18 @@ start_rabbitmq () {
     if [ $RETVAL != 0 ] ; then
         RETVAL=0
         ensure_pid_dir
+        USER_UID=`id -u $USER`
+        USER_GID=`id -g $USER`
+        rm -f ${INIT_LOG_DIR}/startup_log
+        rm -f ${INIT_LOG_DIR}/startup_err
         set +e
-        RABBITMQ_PID_FILE=$PID_FILE /sbin/start-stop-daemon --quiet \
-            --chuid rabbitmq --start --exec $DAEMON --background \
-            --chdir /var/lib/rabbitmq --pidfile "$RABBITMQ_PID_FILE" \
-            > "${INIT_LOG_DIR}/startup_log" \
-            2> "${INIT_LOG_DIR}/startup_err" \
-            0<&-
+        privsock /sbin/capsh --keep=1 --gid=$USER_GID --uid=$USER_UID -- -c \
+            "RABBITMQ_PID_FILE=$PID_FILE /sbin/start-stop-daemon --quiet \
+                --chuid $USER --start --exec $DAEMON --background \
+                --chdir /var/lib/rabbitmq --pidfile "$PID_FILE" \
+                > "${INIT_LOG_DIR}/startup_log" \
+                2> "${INIT_LOG_DIR}/startup_err" \
+                0<&-"
         $CONTROL wait $PID_FILE >/dev/null 2>&1
         RETVAL=$?
         set -e
@@ -81,7 +86,11 @@ stop_rabbitmq () {
             remove_pid
         fi
     else
-        RETVAL=3
+        if [ $RETVAL = 3 ] ; then
+            RETVAL=0
+        else
+            RETVAL=4
+        fi
     fi
 }
 
@@ -154,7 +163,12 @@ case "$1" in
         start_stop_end "stopped"
         ;;
     status)
-        status_rabbitmq
+        status_rabbitmq quiet
+        if [ $RETVAL = 0 ] ; then
+            log_success_msg "$NAME is running"
+        else
+            log_failure_msg "status of $NAME is unknown"
+        fi
         ;;
     rotate-logs)
         log_action_begin_msg "Rotating log files for ${DESC} ${NAME}"
