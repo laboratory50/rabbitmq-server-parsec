@@ -8,7 +8,7 @@ Homepage: http://lab50.net/
 
 Package: rabbitmq-server-parsec
 Architecture: all
-Depends: parsec-cap, libcap2-bin, rabbitmq-server
+Depends: parsec-daemon, rabbitmq-server
 Enhances: rabbitmq-server
 Description: скрипт запуска RabbitMQ с привилегией privsock
  Пакет предоставляет средства для запуска сервера RabbitMQ

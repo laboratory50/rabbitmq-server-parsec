@@ -52,18 +52,15 @@ start_rabbitmq () {
     if [ $RETVAL != 0 ] ; then
         RETVAL=0
         ensure_pid_dir
-        USER_UID=`id -u $USER`
-        USER_GID=`id -g $USER`
         rm -f ${INIT_LOG_DIR}/startup_log
         rm -f ${INIT_LOG_DIR}/startup_err
         set +e
-        privsock /sbin/capsh --keep=1 --gid=$USER_GID --uid=$USER_UID -- -c \
-            "RABBITMQ_PID_FILE=$PID_FILE /sbin/start-stop-daemon --quiet \
-                --chuid $USER --start --exec $DAEMON --background \
-                --chdir /var/lib/rabbitmq --pidfile "$PID_FILE" \
+        RABBITMQ_PID_FILE=$PID_FILE start-stop-parsec-daemon --quiet \
+                --capability 0x100 --chuid $USER --start --exec $DAEMON \
+                --background --chdir /var/lib/rabbitmq --pidfile "$PID_FILE" \
                 > "${INIT_LOG_DIR}/startup_log" \
                 2> "${INIT_LOG_DIR}/startup_err" \
-                0<&-"
+                0<&-
         $CONTROL wait $PID_FILE >/dev/null 2>&1
         RETVAL=$?
         set -e
