@@ -1,3 +1,9 @@
+rabbitmq-server-parsec (0.2) testing; urgency=medium
+
+  * Переход на использование start-stop-parsec-daemon
+
+ -- Лаборатория 50 <team@lab50.net>  Fri, 06 Feb 2015 10:45:11 +0300
+
 rabbitmq-server-parsec (0.1) testing; urgency=medium
 
   * Начальная версия.
