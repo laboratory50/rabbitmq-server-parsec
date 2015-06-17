@@ -1,3 +1,9 @@
+rabbitmq-server-parsec (0.3) testing; urgency=medium
+
+  * Обновление для версии RabbitMQ в Астре 1.4.
+
+ -- Лаборатория 50 <team@lab50.net>  Wed, 17 Jun 2015 09:24:22 +0300
+
 rabbitmq-server-parsec (0.2) testing; urgency=medium
 
   * Переход на использование start-stop-parsec-daemon

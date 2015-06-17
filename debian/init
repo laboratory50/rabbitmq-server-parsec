@@ -52,15 +52,10 @@ start_rabbitmq () {
     if [ $RETVAL != 0 ] ; then
         RETVAL=0
         ensure_pid_dir
-        rm -f ${INIT_LOG_DIR}/startup_log
-        rm -f ${INIT_LOG_DIR}/startup_err
         set +e
         RABBITMQ_PID_FILE=$PID_FILE start-stop-parsec-daemon --quiet \
                 --capability 0x100 --chuid $USER --start --exec $DAEMON \
-                --background --chdir /var/lib/rabbitmq --pidfile "$PID_FILE" \
-                > "${INIT_LOG_DIR}/startup_log" \
-                2> "${INIT_LOG_DIR}/startup_err" \
-                0<&-
+                --background --chdir /var/lib/rabbitmq --pidfile "$PID_FILE"
         $CONTROL wait $PID_FILE >/dev/null 2>&1
         RETVAL=$?
         set -e
@@ -138,13 +133,18 @@ restart_end() {
 start_stop_end() {
     case "$RETVAL" in
         0)
-            log_end_msg 0;;
+            [ -x /sbin/initctl ] && /sbin/initctl emit --no-wait "${NAME}-${1}"
+            log_end_msg 0
+            ;;
         3)
             log_warning_msg "${DESC} already ${1}"
-            log_end_msg 0;;
+            log_end_msg 0
+            RETVAL=0
+            ;;
         *)
             log_warning_msg "FAILED - check ${INIT_LOG_DIR}/startup_\{log, _err\}"
-            log_end_msg 1;;
+            log_end_msg 1
+            ;;
     esac
 }
 
@@ -152,7 +152,7 @@ case "$1" in
     start)
         log_daemon_msg "Starting ${DESC}" $NAME
         start_rabbitmq
-        start_stop_end "started"
+        start_stop_end "running"
         ;;
     stop)
         log_daemon_msg "Stopping ${DESC}" $NAME
@@ -189,4 +189,3 @@ case "$1" in
 esac
 
 exit $RETVAL
-
