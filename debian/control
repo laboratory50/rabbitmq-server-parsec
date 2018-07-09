@@ -2,18 +2,18 @@ Source: rabbitmq-server-parsec
 Priority: optional
 Section: net
 Maintainer: Лаборатория 50 <team@lab50.net>
-Build-Depends: debhelper, cdbs
+Build-Depends: debhelper
 Standards-Version: 3.9.0
 Homepage: http://lab50.net/
 
 Package: rabbitmq-server-parsec
 Architecture: all
-Depends: parsec-daemon, rabbitmq-server
+Depends: parsec-daemon (>= 0.2), rabbitmq-server, pdp
 Enhances: rabbitmq-server
-Description: скрипт запуска RabbitMQ с привилегией privsock
+Description: скрипт запуска RabbitMQ с мандатной меткой
  Пакет предоставляет средства для запуска сервера RabbitMQ
- с привилегией Privsock ОС «Astra Linux Special Edition».
- Пакетом устанливается демон rabbitmq-server-parsec, который
+ с мандантым уровнем ОС «Astra Linux Special Edition».
+ Пакетом устанавливается демон rabbitmq-server-parsec, который
  должен использоваться вместо rabbitmq-server.
  .
  Это пакет устанавливает демон rabbitmq-server-parsec.

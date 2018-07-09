@@ -2,7 +2,7 @@
 # postrm script for rabbitmq-server-parsec
 
 if [ -f /etc/parsec/privsock.conf ]; then
-    sed -i '#/usr/lib/rabbitmq/bin/rabbitmq-server#d' /etc/parsec/privsock.conf
+    sed -i '#/usr/bin/epmd#d' /etc/parsec/privsock.conf
 fi
 
 # DEBHELPER

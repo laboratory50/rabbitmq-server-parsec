@@ -3,19 +3,46 @@
 
 set -e
 
-service rabbitmq-server stop
-update-rc.d rabbitmq-server remove
+LOGDIR=/var/log/rabbitmq
+DATADIR=/var/lib/rabbitmq
 
-DAEMON=/usr/lib/rabbitmq/bin/rabbitmq-server
+if [ "$1" == "configure" ] || [ "$1" == "reconfigure" ]; then
+    service rabbitmq-server stop
+    update-rc.d -f rabbitmq-server remove
 
-if [ $1 == "configure" ] || [ $1 == "reconfigure" ]; then
+    killall epmd
+
     if [ -f /etc/parsec/privsock.conf ]; then
-        grep -q "^${DAEMON}" /etc/parsec/privsock.conf \
-         || echo "${DAEMON}" >> /etc/parsec/privsock.conf
+        grep -q "^/usr/bin/epmd" /etc/parsec/privsock.conf \
+         || echo "/usr/bin/epmd" >> /etc/parsec/privsock.conf
     fi
+
+    if [ ! -f $DATADIR/.erlang.cookie ]; then
+        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24 > $DATADIR/.erlang.cookie
+        chown rabbitmq:rabbitmq $DATADIR/.erlang.cookie
+        chmod 0400 $DATADIR/.erlang.cookie
+    fi
+
+    if [ -d $DATADIR/mnesia ] && [ ! -d $DATADIR/0 ]; then
+        mkdir -p $DATADIR/0
+        chown -R rabbitmq:rabbitmq $DATADIR/0
+        mv $DATADIR/mnesia $DATADIR/0
+    fi
+
+    if [ -n "$(ls -A $LOGDIR 2>/dev/null)" ] && [ ! -d $LOGDIR/0 ]; then
+        mkdir -p $LOGDIR/0
+        find $LOGDIR -maxdepth 1 -type f -name "[^.]*" -exec mv {} $LOGDIR/0 \;
+        chown -R rabbitmq:adm $LOGDIR/0
+    fi
+
+    sysmaxlbl="3:0:0xffffffffffffffff"
+    pdpl-file "${sysmaxlbl}:CCNRA" /var/log
+    pdpl-file "${sysmaxlbl}:CCNRA" $LOGDIR
+
+    pdpl-file "${sysmaxlbl}:CCNRA" /var/lib
+    pdpl-file "${sysmaxlbl}:CCNRA" $DATADIR
 fi
 
 # DEBHELPER
 
 exit 0
-

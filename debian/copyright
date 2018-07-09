@@ -4,7 +4,7 @@ It was downloaded from http://github.com/laboratory50/rabbitmq-server-parsec
 
 Upstream Authors:
 
-    Vasiliy Shlykov <vash@vasiliyshlykov.org>
+    Vasiliy Shlykov <vash@lab50.net>
     Лаборатория 50 http://lab50.net
 
 Copyright:
@@ -17,7 +17,7 @@ License:
 
 The Debian packaging is:
 
-    © Vasiliy Shlykov <vash@vasiliyshlykov.org>
+    © Vasiliy Shlykov <vash@lab50.net>
 
 and is licensed under the GPL version 3.
 
